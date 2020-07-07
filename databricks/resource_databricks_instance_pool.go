@@ -2,13 +2,14 @@ package databricks
 
 import (
 	"fmt"
+	"log"
+	"strings"
+	"time"
+
 	"github.com/databrickslabs/databricks-terraform/client/model"
 	"github.com/databrickslabs/databricks-terraform/client/service"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
-	"log"
-	"strings"
-	"time"
 )
 
 func resourceInstancePool() *schema.Resource {
@@ -222,7 +223,7 @@ func resourceInstancePoolCreate(d *schema.ResourceData, m interface{}) error {
 	}
 
 	if sparkVersions, ok := d.GetOk("preloaded_spark_versions"); ok {
-		instancePool.PreloadedSparkVersions = sparkVersions.([]string)
+		instancePool.PreloadedSparkVersions = convertListInterfaceToString(sparkVersions.([]interface{}))
 	}
 
 	instancePoolInfo, err := client.InstancePools().Create(instancePool)
